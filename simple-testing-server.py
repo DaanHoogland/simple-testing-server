@@ -4,6 +4,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 import cgi
 
 
+ADDRESS = "localhost"
 PORT = 8003
 FILE_PREFIX = "."
 
@@ -12,6 +13,8 @@ if __name__ == "__main__":
         import argparse
 
         parser = argparse.ArgumentParser(description='A simple fake server for testing your API client.')
+        parser.add_argument('-a', '--address', type=str, dest="ADDRESS",
+                           help='the interface/address to listen on; defaults to localhost')
         parser.add_argument('-p', '--port', type=int, dest="PORT",
                            help='the port to run the server on; defaults to 8003')
         parser.add_argument('--path', type=str, dest="PATH",
@@ -19,6 +22,8 @@ if __name__ == "__main__":
 
         args = parser.parse_args()
 
+        if args.ADDRESS:
+            ADDRESS = args.ADDRESS
         if args.PORT:
             PORT = args.PORT
         if args.PATH:
@@ -89,5 +94,5 @@ class JSONRequestHandler (BaseHTTPRequestHandler):
             self.send_response(500)
 
 
-server = HTTPServer(("localhost", PORT), JSONRequestHandler)
+server = HTTPServer((ADDRESS, PORT), JSONRequestHandler)
 server.serve_forever()
